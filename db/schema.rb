@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_20_191335) do
+ActiveRecord::Schema.define(version: 2020_08_31_141141) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "riders", force: :cascade do |t|
     t.string "email", null: false
+    t.text "access_token_ciphertext"
+    t.text "refresh_token_ciphertext"
   end
 
   create_table "rides", force: :cascade do |t|

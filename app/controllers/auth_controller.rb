@@ -4,7 +4,7 @@ require "net/http"
 class AuthController < ApplicationController
   def login
     token_params = {
-      client_secret: Rails.application.secrets[:strava_client_secret],
+      client_secret: Rails.application.credentials.strava_client_secret,
       client_id: "22020",
       code: params[:code]
     }
