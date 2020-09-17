@@ -35,5 +35,8 @@ module Api
     config.api_only = true
 
     Rails.application.config.hosts << "localhost:3002"
+
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
   end
 end
