@@ -95,6 +95,9 @@ GEM
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-byebug (3.9.0)
+      byebug (~> 11.0)
+      pry (~> 0.13.0)
     puma (4.3.5)
       nio4r (~> 2.0)
     rack (2.2.3)
@@ -175,11 +178,11 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   bootsnap (>= 1.4.2)
-  byebug
   listen (~> 3.2)
   lockbox
   pg (>= 0.18, < 2.0)
   pry
+  pry-byebug
   puma (~> 4.1)
   rack-cors
   rails (~> 6.0.3, >= 6.0.3.2)
