@@ -8,10 +8,6 @@ class RidersController < ApplicationController
     render json: @rider
   end
 
-  def create
-    Rider.create(rider_params)
-  end
-
   private
 
   def rider_params
