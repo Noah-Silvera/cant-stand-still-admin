@@ -25,6 +25,7 @@ gem 'bcrypt'
 gem 'rack-cors'
 gem "lockbox"
 gem 'rack-cors'
+gem 'webmock'
 
 group :development, :test do
   gem 'pry-byebug'

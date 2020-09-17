@@ -34,6 +34,7 @@ module Api
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.hosts << "localhost"
     Rails.application.config.hosts << "localhost:3002"
 
     config.middleware.use ActionDispatch::Cookies
