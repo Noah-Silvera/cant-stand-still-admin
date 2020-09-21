@@ -11,6 +11,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
 
     resource '/login',
       headers: :any,
+      credentials: true,
       methods: [:post, :options]
   end
 end
