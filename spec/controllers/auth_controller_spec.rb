@@ -77,7 +77,7 @@ RSpec.describe "Auth Controller", type: :request do
 
       it "sets a session variable" do
         subject
-        expect(session[:rider_id]).to eq(1)
+        expect(session[:user_id]).to eq(1)
       end
     end
 

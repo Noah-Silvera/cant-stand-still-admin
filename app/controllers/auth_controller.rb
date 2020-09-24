@@ -30,7 +30,7 @@ class AuthController < ApplicationController
     rider.update!(athlete_json: body["athlete"], access_token: body["access_token"], refresh_token: body["refresh_token"])
     rider.save!
 
-    session[:rider_id] = rider.user_id
+    session[:user_id] = rider.user_id
     render json: {id: rider.user_id}, status: :ok
   end
 end
