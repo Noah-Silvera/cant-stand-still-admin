@@ -1,6 +1,7 @@
 class TripsController < ApplicationController
   def index
-    render json: Trip.all
+    @rider = Rider.find_by user_id: params[:rider_id]
+    render json: @rider.trips.all
   end
 
   def show
