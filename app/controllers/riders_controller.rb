@@ -1,10 +1,12 @@
 class RidersController < ApplicationController
   def index
+    authorize Rider
     render json: Rider.all
   end
 
   def show
-    @rider = Rider.find params[:id]
+    @rider = Rider.find_by(user_id: params[:id])
+    authorize @rider
     render json: @rider
   end
 
