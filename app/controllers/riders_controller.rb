@@ -1,7 +1,7 @@
 class RidersController < ApplicationController
   def index
     authorize Rider
-    render json: Rider.all
+    render json: Rider.select(*public_attrs).all
   end
 
   def show
@@ -12,6 +12,10 @@ class RidersController < ApplicationController
   end
 
   private
+
+  def public_attrs
+    [:user_id]
+  end
 
   def rider_params
     params.require(:rider).permit(:email)
