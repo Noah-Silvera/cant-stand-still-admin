@@ -25,6 +25,7 @@ gem 'rack-cors'
 gem "lockbox"
 gem 'webmock'
 gem 'pundit'
+gem 'factory_bot_rails'
 
 group :development, :test do
   gem 'pry-byebug'
