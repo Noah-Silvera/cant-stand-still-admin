@@ -5,9 +5,8 @@ class RidersController < ApplicationController
   end
 
   def show
-    @rider = Rider.find_by(user_id: params[:id])
+    @rider = Rider.select(*public_attrs).find_by(user_id: params[:id])
     authorize @rider
-    # TODO -only permit certain things from being returned in this JSON
     render json: @rider
   end
 

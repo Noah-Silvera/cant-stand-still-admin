@@ -58,4 +58,40 @@ RSpec.describe "Auth Controller", type: :request do
       end
     end
   end
+
+  describe "/show" do
+    let(:rider) { create :rider }
+
+    subject { get "/riders/#{rider.user_id}" }
+
+    it "responds with a success code" do
+      subject
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "responds with json content" do
+      subject
+      expect(response.content_type).to eq("application/json; charset=utf-8")
+    end
+
+    it "returns the rider" do
+      subject
+      rider_res = JSON.parse response.body
+
+      expect(rider_res["user_id"]).to eq(rider.user_id)
+    end
+
+    it "doesn't return the access or refresh token" do
+      subject
+      rider_res = JSON.parse response.body
+
+      expect(rider_res["access_token"]).to eq(nil)
+      expect(rider_res["refresh_token"]).to eq(nil)
+    end
+
+    it "doesnt return the athlete JSON" do
+      subject
+      expect(JSON.parse(response.body)["athlete_json"]).to eq(nil)
+    end
+  end
 end
