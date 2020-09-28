@@ -23,7 +23,6 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'bcrypt'
 gem 'rack-cors'
 gem "lockbox"
-gem 'rack-cors'
 gem 'webmock'
 gem 'pundit'
 
