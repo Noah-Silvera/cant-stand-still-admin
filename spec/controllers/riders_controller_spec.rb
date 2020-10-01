@@ -74,11 +74,19 @@ RSpec.describe "Auth Controller", type: :request do
       expect(response.content_type).to eq("application/json; charset=utf-8")
     end
 
-    it "returns the rider" do
+    it "includes the riders user_id" do
       subject
       rider_res = JSON.parse response.body
 
       expect(rider_res["user_id"]).to eq(rider.user_id)
+    end
+
+    it "includes the riders name" do
+      subject
+      rider_res = JSON.parse response.body
+
+      expect(rider_res["first_name"]).to eq("Sylvia")
+      expect(rider_res["last_name"]).to eq("Rivera")
     end
 
     it "doesn't return the access or refresh token" do
