@@ -43,4 +43,6 @@ ActiveRecord::Schema.define(version: 2020_09_24_145321) do
   end
 
   add_foreign_key "trips", "riders", column: "user_id"
+  add_foreign_key "rides", "trips", column: "trip_id"
+  add_foreign_key "rides", "riders", column: "user_id"
 end
