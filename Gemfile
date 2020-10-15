@@ -26,6 +26,7 @@ gem "lockbox"
 gem 'webmock'
 gem 'pundit'
 gem 'factory_bot_rails'
+gem 'sidekiq', '~>6.1.2'
 
 group :development, :test do
   gem 'pry-byebug'
