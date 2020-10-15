@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_24_145321) do
+ActiveRecord::Schema.define(version: 2020_10_15_170526) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +20,7 @@ ActiveRecord::Schema.define(version: 2020_09_24_145321) do
     t.text "refresh_token_ciphertext"
     t.integer "user_id", null: false
     t.jsonb "athlete_json", null: false
+    t.datetime "access_token_expires_at", default: "2020-10-15 17:10:01", null: false
     t.index ["user_id"], name: "index_riders_on_user_id"
   end
 
@@ -42,7 +44,7 @@ ActiveRecord::Schema.define(version: 2020_09_24_145321) do
     t.index ["user_id"], name: "index_trips_on_user_id"
   end
 
-  add_foreign_key "trips", "riders", column: "user_id"
-  add_foreign_key "rides", "trips", column: "trip_id"
   add_foreign_key "rides", "riders", column: "user_id"
+  add_foreign_key "rides", "trips"
+  add_foreign_key "trips", "riders", column: "user_id"
 end
