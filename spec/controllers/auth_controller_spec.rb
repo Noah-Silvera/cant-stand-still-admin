@@ -6,7 +6,7 @@ RSpec.describe "Auth Controller", type: :request do
       subject { post "/login", params: {scope: ["read", "activity:read"], code: "12312"} }
 
       before do
-        stub_request(:post, "https://www.strava.com/oauth/token")
+        stub_request(:post, "https://www.strava.com/api/v3/oauth/token")
           .to_return(body: JSON.generate({
             access_token: "123123",
             refresh_token: "456456",
@@ -103,7 +103,7 @@ RSpec.describe "Auth Controller", type: :request do
 
     context "strava code is invalid or expired" do
       it "returns an unknown error" do
-        stub_request(:post, "https://www.strava.com/oauth/token")
+        stub_request(:post, "https://www.strava.com/api/v3/oauth/token")
           .to_return(status: 200, body: "{}", headers: {})
 
         post "/login", params: {scope: ["read", "activity:read"], code: "12312badCode"}
@@ -116,7 +116,7 @@ RSpec.describe "Auth Controller", type: :request do
 
     context "strava API returns an authorization error" do
       it "returns an authorization error" do
-        stub_request(:post, "https://www.strava.com/oauth/token")
+        stub_request(:post, "https://www.strava.com/api/v3/oauth/token")
           .to_return(body: JSON.generate({
             errors: [
               {
