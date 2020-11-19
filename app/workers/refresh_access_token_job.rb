@@ -1,7 +1,8 @@
 require 'sidekiq/api'
 
-class RefreshAccessTokenJob < ApplicationJob
-  queue_as :default
+class RefreshAccessTokenJob
+  include Sidekiq::Worker
+  sidekiq_options :retry => 2
 
   def perform(rider_id)
     if (rider = Rider.find_by id: rider_id)
@@ -16,8 +17,8 @@ class RefreshAccessTokenJob < ApplicationJob
 
       rider.update!(access_token: response.access_token, refresh_token: response.refresh_token)
 
-      unless RefreshAccessTokenJob.queue_adapter.enqueued_jobs.any? { |j| Time.at(j[:at]).to_datetime <= (response.expires_at - 1.hour) }
-        RefreshAccessTokenJob.set(wait_until: response.expires_at - 1.hour).perform_later(rider_id)
+      unless RefreshAccessTokenJob.jobs.any? { |j| Time.at(j["at"]).to_datetime <= (response.expires_at - 1.hour) }
+        RefreshAccessTokenJob.perform_at(response.expires_at - 1.hour, rider_id)
       end
     end
   end

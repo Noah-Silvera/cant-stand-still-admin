@@ -1,5 +1,6 @@
 require "rails_helper"
 require 'sidekiq/testing'
+require 'support/helpers'
 
 RSpec.describe RefreshAccessTokenJob, type: :worker do
   include JobHelpers
@@ -47,13 +48,13 @@ RSpec.describe RefreshAccessTokenJob, type: :worker do
   end
 
   it "enqueues another job an hour before token expiration" do
-    expect { subject }.to have_enqueued_job(RefreshAccessTokenJob)
-    expect(Time.at(enqueued_jobs.last[:at]).to_datetime).to eq(5.hours.from_now)
+    subject
+    expect(RefreshAccessTokenJob).to have_enqueued_sidekiq_job(rider.id).at(5.hours.from_now)
   end
 
   context "there is another another refresh job enqueued before the expiration of the token" do
     before do
-      RefreshAccessTokenJob.set(wait_until: 1.hour.from_now).perform_later(rider.id)
+      RefreshAccessTokenJob.perform_at(1.hour.from_now)
     end
 
     it "does not enqueue another job" do
