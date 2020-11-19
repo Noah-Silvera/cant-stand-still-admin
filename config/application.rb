@@ -14,6 +14,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 # require "sprockets/railtie"
 require "rails/test_unit/railtie"
+require "sidekiq"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -39,5 +40,15 @@ module Api
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
+
+    config.active_job.queue_adapter = :sidekiq
+
+    Sidekiq.configure_server do |config|
+      config.redis = { url: 'redis://localhost:6379/0', namespace: "bike_fast" }
+    end
+    
+    Sidekiq.configure_client do |config|
+      config.redis = { url: 'redis://localhost:6379/0', namespace: "bike_fast" }
+    end
   end
 end
