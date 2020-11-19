@@ -48,8 +48,10 @@ RSpec.describe RefreshAccessTokenJob, type: :worker do
   end
 
   it "enqueues another job an hour before token expiration" do
-    subject
-    expect(RefreshAccessTokenJob).to have_enqueued_sidekiq_job(rider.id).at(5.hours.from_now)
+    Timecop.freeze(Time.zone.now) do
+      subject
+      expect(RefreshAccessTokenJob).to have_enqueued_sidekiq_job(rider.id).at(5.hours.from_now)
+    end
   end
 
   context "there is another another refresh job enqueued before the expiration of the token" do
