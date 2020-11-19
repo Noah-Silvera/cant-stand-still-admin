@@ -156,6 +156,8 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redis (4.2.2)
+    redis-namespace (1.8.0)
+      redis (>= 3.0.4)
     rspec-core (3.9.2)
       rspec-support (~> 3.9.3)
     rspec-expectations (3.9.2)
@@ -172,6 +174,9 @@ GEM
       rspec-expectations (~> 3.9)
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
+    rspec-sidekiq (3.1.0)
+      rspec-core (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.9.3)
     ruby2_keywords (0.0.2)
     sidekiq (6.1.2)
@@ -223,7 +228,9 @@ DEPENDENCIES
   pundit
   rack-cors
   rails
+  redis-namespace
   rspec-rails
+  rspec-sidekiq
   sidekiq (~> 6.1.2)
   spring
   spring-watcher-listen (~> 2.0.0)
