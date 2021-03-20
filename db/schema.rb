@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_20_031815) do
+ActiveRecord::Schema.define(version: 2021_03_20_032030) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2021_03_20_031815) do
     t.integer "user_id", null: false
     t.jsonb "athlete_json", null: false
     t.datetime "access_token_expires_at", default: "2020-10-15 17:10:01", null: false
-    t.index ["user_id"], name: "index_riders_on_user_id"
+    t.index ["user_id"], name: "index_riders_on_user_id", unique: true
   end
 
   create_table "rides", force: :cascade do |t|
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2021_03_20_031815) do
     t.index ["activity_json"], name: "index_rides_on_activity_json", using: :gin
     t.index ["start_date"], name: "index_rides_on_start_date"
     t.index ["trip_id"], name: "index_trip_id"
-    t.index ["user_id"], name: "index_user_id"
+    t.index ["user_id"], name: "index_rides_on_user_id", unique: true
   end
 
   create_table "trips", force: :cascade do |t|
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2021_03_20_031815) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["name"], name: "index_trips_on_name"
-    t.index ["user_id"], name: "index_trips_on_user_id"
+    t.index ["user_id"], name: "index_trips_on_user_id", unique: true
   end
 
   add_foreign_key "rides", "riders", column: "user_id"
