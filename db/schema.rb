@@ -16,11 +16,13 @@ ActiveRecord::Schema.define(version: 2021_03_20_032030) do
   enable_extension "plpgsql"
 
   create_table "riders", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.text "access_token_ciphertext"
     t.text "refresh_token_ciphertext"
     t.integer "user_id", null: false
     t.jsonb "athlete_json", null: false
-    t.datetime "access_token_expires_at", default: "2020-10-15 17:10:01", null: false
+    t.datetime "access_token_expires_at", default: "2021-03-20 03:51:59", null: false
     t.index ["user_id"], name: "index_riders_on_user_id", unique: true
   end
 
@@ -36,7 +38,7 @@ ActiveRecord::Schema.define(version: 2021_03_20_032030) do
     t.index ["activity_json"], name: "index_rides_on_activity_json", using: :gin
     t.index ["start_date"], name: "index_rides_on_start_date"
     t.index ["trip_id"], name: "index_trip_id"
-    t.index ["user_id"], name: "index_rides_on_user_id", unique: true
+    t.index ["user_id"], name: "index_user_id"
   end
 
   create_table "trips", force: :cascade do |t|
@@ -47,10 +49,8 @@ ActiveRecord::Schema.define(version: 2021_03_20_032030) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["name"], name: "index_trips_on_name"
-    t.index ["user_id"], name: "index_trips_on_user_id", unique: true
+    t.index ["user_id"], name: "index_trips_on_user_id"
   end
 
-  add_foreign_key "rides", "riders", column: "user_id"
-  add_foreign_key "rides", "trips"
   add_foreign_key "trips", "riders", column: "user_id"
 end
