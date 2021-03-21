@@ -146,4 +146,20 @@ RSpec.describe RefreshAccessTokenJob, type: :worker do
       expect { subject }.to raise_error { Strava::Errors::Fault }
     end
   end
+
+  context "the rider has a nil refresh token" do
+    let(:rider) { create :rider, refresh_token: nil }
+
+    it "returns early" do
+      expect(subject).to be_nil
+    end
+  end
+
+  context "the rider does not exist" do
+    subject { RefreshAccessTokenJob.new.perform(100000) }
+
+    it "returns early" do
+      expect(subject).to be_nil
+    end
+  end
 end

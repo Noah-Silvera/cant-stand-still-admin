@@ -6,6 +6,8 @@ class RefreshAccessTokenJob
 
   def perform(rider_id)
     if (rider = Rider.find_by id: rider_id)
+      return if rider.refresh_token.nil?
+
       begin
         client = Strava::OAuth::Client.new(
           client_id: "22020",
