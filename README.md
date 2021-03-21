@@ -26,3 +26,7 @@ The specs are written with RSpec, and the whole suite can be run like this
 This server is meant to be run in [tandem with the frontend](https://github.com/Noah-Silvera/cant-stand-still-frontend)
 
 Follow the instructions in the readme for that project to setup running it against your local server.
+
+## Job Architecture
+
+Check out [Design.md](./api/Design.md) to learn about how the API pulls ride data from Strava

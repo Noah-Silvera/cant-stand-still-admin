@@ -8,31 +8,18 @@ See [this chart](https://app.lucidchart.com/invitations/accept/9ace1991-399e-442
     - _Queued_: When a new access and refresh token is received.
     - _Task_: Get a new access and refresh token from strava
     - _Success_: Store the new access and refresh token and queue....
-        - Another instance of `RefreshAccessTokenJob`
+        - Another instance of `RefreshAccessTokenJob` for immediately before the access token expires
         - An instance of `RefreshProfileInfoJob`
-        - An instance of `GetLatestRidesJob`
-    - _Failure_: Queue the `FailedStravaRequestHandler`.
+        - An instance of `FetchRidesJob`
+    - _Failure_: set the access token and refresh token to nil and send the user an email informing them their credentials are out of date.
 
-- `GetLatestRidesJob`
-  - _Queued_: When a new access and refresh token is received, **OR** every X minutes.
-  - _Task_: Retrieved all the rides since the last ride in the DB.
-    - _if_: no new rides are available.
-      - Queue another `GetLatestRidesJob` in X minutes.
-    - _else_: store the new rides in the DB and queue another `GetLatestRidesJob` now and force refresh nextjs.
-  - _Failure_: Queue the `FailedStravaRequestHandler`
+- `FetchRidesJob`
+  - _Queued_: When a user first logs in OR on a webhook from strava signaling a new ride has been uploaded
+  - _Task_: Retrieved all the rides since the last ride in the DB and force a refresh for the relevant nextjs page
+  - _Failure_: Queue a `RefreshAccessTokenJob` and retry up to a maximum of 4 times
 
 - `RefreshProfileInfoJob`
     - _Queued_: by jobs that refresh the access token
     - _Task_: Get new profile info from strava
     - _Success_: Force refresh the nextjs page for that profile
     - _Failure_: Queue the `FailedStravaRequestHandler`
-
-- `FailedStravaRequestHandler`
-    - _Queued_: When a request to strava fails.
-    - _if_ the failure is a token error: Queue a `NotifyUserJob`.
-    - _if_ the failure is an unknown error: Send a retry message up to X times.
-    - _else_ Log an unknown error.
-    <!-- TODO - this might not have to be a job... -->
-
-- `NotifyUserJob`
-    - TODO
