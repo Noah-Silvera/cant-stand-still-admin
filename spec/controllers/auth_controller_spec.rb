@@ -79,6 +79,11 @@ RSpec.describe "Auth Controller", type: :request do
         subject
         expect(session[:user_id]).to eq(1)
       end
+
+      it "queues a FetchRidesJob" do
+        subject
+        expect(FetchRidesJob).to have_enqueued_sidekiq_job(Rider.first.id)
+      end
     end
 
     context "scope doesn't include read permission" do
