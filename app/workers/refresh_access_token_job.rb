@@ -10,7 +10,7 @@ class RefreshAccessTokenJob
 
       begin
         client = Strava::OAuth::Client.new(
-          client_id: "22020",
+          client_id: Rails.application.credentials.strava_client_id,
           client_secret: Rails.application.credentials.strava_client_secret
         )
 
