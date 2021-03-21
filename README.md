@@ -30,3 +30,7 @@ Follow the instructions in the readme for that project to setup running it again
 ## Job Architecture
 
 Check out [Design.md](./api/Design.md) to learn about how the API pulls ride data from Strava
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)

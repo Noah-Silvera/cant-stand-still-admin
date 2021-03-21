@@ -1,0 +1,1 @@
+Please contact Noah Silvera through an issue if you would like to contribute to this repository. Currently, I am the only one contributing, so I would have to change my development habits on this repository once there is another contributor. I would love to have someone else build this with me!
