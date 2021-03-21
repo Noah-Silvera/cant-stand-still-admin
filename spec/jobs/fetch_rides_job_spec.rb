@@ -176,4 +176,31 @@ RSpec.describe FetchRidesJob, type: :worker do
       end
     end
   end
+
+  context "an authorization error occurs" do
+    let(:rider) { create :rider }
+
+    before do
+      stub_request(:get, "https://www.strava.com/api/v3/athlete/activities")
+        .with(
+          query: hash_including({}),
+          headers: {
+            'Accept'=>'application/json; charset=utf-8',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'Authorization'=>'Bearer fake-access-token',
+            'User-Agent'=>'Strava Ruby Client/0.4.0'
+          }
+        ).to_return(lambda { |req|
+          {
+            status: 401,
+            body: ""
+          }
+        })
+    end
+
+    it "queues a RefreshAccessTokenJob then re-raises the error" do
+      expect { subject }.to raise_error
+      expect(RefreshAccessTokenJob).to have_enqueued_sidekiq_job(rider.id)
+    end
+  end
 end

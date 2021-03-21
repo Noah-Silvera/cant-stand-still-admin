@@ -7,25 +7,30 @@ class FetchRidesJob
 
   def perform(rider_id)
     if (rider = Rider.find_by id: rider_id)
-      client = Strava::Api::Client.new(
-        access_token: rider.access_token
-      )
+      begin
+        client = Strava::Api::Client.new(
+          access_token: rider.access_token
+        )
 
-      ordered_rides = rider.rides.order(start_date: :asc)
+        ordered_rides = rider.rides.order(start_date: :asc)
 
-      before = Time.zone.now
-      if ordered_rides.present?
-        before = ordered_rides.first.start_date.to_time
+        before = Time.zone.now
+        if ordered_rides.present?
+          before = ordered_rides.first.start_date.to_time
+        end
+
+        client.athlete_activities(before: before) { |activity| process_activity(rider, activity) }
+
+        after = Time.zone.now
+        if ordered_rides.reload.present?
+          after = ordered_rides.last.start_date.to_time
+        end
+
+        client.athlete_activities(after: after) { |activity| process_activity(rider, activity) }
+      rescue Strava::Errors::Fault => e
+        RefreshAccessTokenJob.perform_async(rider_id)
+        raise e
       end
-
-      client.athlete_activities(before: before) { |activity| process_activity(rider, activity) }
-
-      after = Time.zone.now
-      if ordered_rides.reload.present?
-        after = ordered_rides.last.start_date.to_time
-      end
-
-      client.athlete_activities(after: after) { |activity| process_activity(rider, activity) }
     end
   end
 
