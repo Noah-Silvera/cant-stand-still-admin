@@ -1,3 +1,8 @@
+### BACKEND
+
+This is the backend of the Cant Stand Still app.
+The frontend [is here] (https://github.com/Noah-Silvera/cant-stand-still-frontend)
+
 ## Cant Stand Still
 
 This is an application which aims to allow connect and visualize your strava data as trips over a time period. It will allow you to login with Strava, create "trips" that span date ranges, and view those trips as connected rides on a map, along with some stats
