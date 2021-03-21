@@ -1,7 +1,7 @@
 ### BACKEND
 
 This is the backend of the Cant Stand Still app.
-The frontend [is here] (https://github.com/Noah-Silvera/cant-stand-still-frontend)
+The frontend [is here](https://github.com/Noah-Silvera/cant-stand-still-frontend)
 
 ## Cant Stand Still
 
