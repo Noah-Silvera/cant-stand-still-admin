@@ -65,4 +65,85 @@ RSpec.describe RefreshAccessTokenJob, type: :worker do
       end
     end
   end
+
+  context "the access token request has an invalid refresh token" do
+    before do
+      stub_request(:post, "https://www.strava.com/oauth/token")
+        .to_return(
+          status: 400,
+          body: {
+            "message": "Bad Request",
+            "errors": [
+              {
+                "resource": "RefreshToken",
+                "field": "refresh_token",
+                "code": "invalid"
+              }
+            ]
+          }.to_json,
+          headers: {
+            "date": "Sun, 21 Mar 2021 15:35:03 GMT",
+            "content-type": "application/json; charset=utf-8",
+            "transfer-encoding": "chunked",
+            "connection": "keep-alive",
+            "cache-control": "no-cache",
+            "via": "1.1 linkerd",
+            "x-download-options": "noopen",
+            "status": "400 Bad Request",
+            "x-request-id": "6601d5d3-5dc1-4ae2-94ef-9f3687880fdc",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "x-frame-options": "DENY",
+            "x-permitted-cross-domain-policies": "none",
+            "x-content-type-options": "nosniff",
+            "vary": "Origin",
+            "x-xss-protection": "1; mode=block"
+          }
+        )
+    end
+
+    it "sets the access token and refresh token to nil" do
+      expect { subject }.to change { rider.reload.access_token }.to(nil)
+        .and change { rider.reload.refresh_token }.to(nil)
+    end
+  end
+
+  context "the access token request is invalid for another reason" do
+    before do
+      stub_request(:post, "https://www.strava.com/oauth/token")
+        .to_return(
+          status: 400,
+          body: {
+            "message": "Bad Request",
+            "errors": [
+              {
+                "resource": "RefreshToken",
+                "field": "refresh_token",
+                "code": "some_other_reason"
+              }
+            ]
+          }.to_json,
+          headers: {
+            "date": "Sun, 21 Mar 2021 15:35:03 GMT",
+            "content-type": "application/json; charset=utf-8",
+            "transfer-encoding": "chunked",
+            "connection": "keep-alive",
+            "cache-control": "no-cache",
+            "via": "1.1 linkerd",
+            "x-download-options": "noopen",
+            "status": "400 Bad Request",
+            "x-request-id": "6601d5d3-5dc1-4ae2-94ef-9f3687880fdc",
+            "referrer-policy": "strict-origin-when-cross-origin",
+            "x-frame-options": "DENY",
+            "x-permitted-cross-domain-policies": "none",
+            "x-content-type-options": "nosniff",
+            "vary": "Origin",
+            "x-xss-protection": "1; mode=block"
+          }
+        )
+    end
+
+    it "re-raises the error" do
+      expect { subject }.to raise_error { Strava::Errors::Fault }
+    end
+  end
 end
