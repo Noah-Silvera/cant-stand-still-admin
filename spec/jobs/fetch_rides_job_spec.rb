@@ -203,4 +203,20 @@ RSpec.describe FetchRidesJob, type: :worker do
       expect(RefreshAccessTokenJob).to have_enqueued_sidekiq_job(rider.id)
     end
   end
+
+  context "a rider does not have an access token" do
+    let(:rider) { create :rider, access_token: nil }
+
+    it "exits the job early" do
+      expect(subject).to be_nil
+    end
+  end
+
+  context "the rider does not exist" do
+    subject { FetchRidesJob.new.perform(100000) }
+
+    it "exits the job early" do
+      expect(subject).to be_nil
+    end
+  end
 end

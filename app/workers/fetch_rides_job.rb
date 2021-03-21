@@ -7,6 +7,8 @@ class FetchRidesJob
 
   def perform(rider_id)
     if (rider = Rider.find_by id: rider_id)
+      return if rider.access_token.nil?
+
       begin
         client = Strava::Api::Client.new(
           access_token: rider.access_token
