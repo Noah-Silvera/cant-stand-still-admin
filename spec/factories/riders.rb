@@ -12,7 +12,7 @@ FactoryBot.define do
         "summit" => false,
         "country" => nil,
         "premium" => false,
-        "profile" => "https://graph.facebook.com/345123123/picture?height=256&width=256",
+        "profile" => "https://prof.pic",
         "follower" => nil,
         "firstname" => "Sylvia",
         "lastname" => "Rivera",
@@ -20,7 +20,7 @@ FactoryBot.define do
         "created_at" => "2017-05-22T21:53:18Z",
         "updated_at" => "2020-04-15T04:56:08Z",
         "badge_type_id" => 0,
-        "profile_medium" => "https://graph.facebook.com/234324234/picture?height=256&width=256",
+        "profile_medium" => "https://medium.prof.pic",
         "resource_state" => 2
       }
     end

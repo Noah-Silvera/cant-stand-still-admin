@@ -17,7 +17,7 @@ class RidersController < ApplicationController
   end
 
   def public_methods
-    [:first_name, :last_name]
+    [:first_name, :last_name, :profile_picture, :profile_picture_medium]
   end
 
   def rider_params

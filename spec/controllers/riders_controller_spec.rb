@@ -89,6 +89,14 @@ RSpec.describe "Auth Controller", type: :request do
       expect(rider_res["last_name"]).to eq("Rivera")
     end
 
+    it "includes the riders profile pictures" do
+      subject
+      rider_res = JSON.parse response.body
+
+      expect(rider_res["profile_picture"]).to eq("https://prof.pic")
+      expect(rider_res["profile_picture_medium"]).to eq("https://medium.prof.pic")
+    end
+
     it "doesn't return the access or refresh token" do
       subject
       rider_res = JSON.parse response.body

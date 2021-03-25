@@ -10,4 +10,12 @@ class Rider < ApplicationRecord
   def last_name
     athlete_json["lastname"]
   end
+
+  def profile_picture_medium
+    athlete_json["profile_medium"]
+  end
+
+  def profile_picture
+    athlete_json["profile"]
+  end
 end
