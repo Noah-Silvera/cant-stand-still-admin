@@ -6,6 +6,29 @@ RSpec.describe RefreshAccessTokenJob, type: :worker do
   include JobHelpers
   include ActiveSupport::Testing::TimeHelpers
 
+  context "class methods" do
+    subject { RefreshAccessTokenJob.queue_job(rider) }
+
+    let(:rider) { create :rider, access_token_expires_at: 6.hours.from_now }
+
+    it "enqueues another job an hour before token expiration" do
+      Timecop.freeze(Time.zone.now) do
+        subject
+        expect(RefreshAccessTokenJob).to have_enqueued_sidekiq_job(rider.id).at(5.hours.from_now)
+      end
+    end
+
+    context "there is another another refresh job enqueued before the expiration of the token" do
+      before do
+        RefreshAccessTokenJob.perform_at(1.hour.from_now)
+      end
+
+      it "does not enqueue another job" do
+        expect { subject }.not_to have_enqueued_job(RefreshAccessTokenJob)
+      end
+    end
+  end
+
   context "instance methods" do
     subject { RefreshAccessTokenJob.new.perform(rider.id) }
 
@@ -49,21 +72,9 @@ RSpec.describe RefreshAccessTokenJob, type: :worker do
         expect { subject }.to change { rider.reload.access_token }
       end
 
-      it "enqueues another job an hour before token expiration" do
-        Timecop.freeze(Time.zone.now) do
-          subject
-          expect(RefreshAccessTokenJob).to have_enqueued_sidekiq_job(rider.id).at(5.hours.from_now)
-        end
-      end
-
-      context "there is another another refresh job enqueued before the expiration of the token" do
-        before do
-          RefreshAccessTokenJob.perform_at(1.hour.from_now)
-        end
-
-        it "does not enqueue another job" do
-          expect { subject }.not_to have_enqueued_job(RefreshAccessTokenJob)
-        end
+      it "queues another refresh job" do
+        expect(RefreshAccessTokenJob).to receive(:queue_job)
+        subject
       end
     end
 

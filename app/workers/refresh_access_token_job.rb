@@ -4,6 +4,17 @@ class RefreshAccessTokenJob
   include Sidekiq::Worker
   sidekiq_options :retry => 2
 
+  class << self
+    def queue_job(rider)
+      unless RefreshAccessTokenJob.jobs.any? { |j| Time.at(j["at"]).to_datetime <= (rider.access_token_expires_at - 1.hour) }
+        RefreshAccessTokenJob.perform_at(
+          rider.access_token_expires_at - 1.hour,
+          rider.id
+        )
+      end
+    end
+  end
+
   def perform(rider_id)
     if (rider = Rider.find_by id: rider_id)
       return if rider.refresh_token.nil?
@@ -21,11 +32,13 @@ class RefreshAccessTokenJob
           grant_type: 'refresh_token'
         )
 
-        rider.update!(access_token: response.access_token, refresh_token: response.refresh_token)
+        rider.update!(
+          access_token: response.access_token,
+          refresh_token: response.refresh_token,
+          access_token_expires_at: response.expires_at
+        )
 
-        unless RefreshAccessTokenJob.jobs.any? { |j| Time.at(j["at"]).to_datetime <= (response.expires_at - 1.hour) }
-          RefreshAccessTokenJob.perform_at(response.expires_at - 1.hour, rider_id)
-        end
+        RefreshAccessTokenJob.queue_job(rider)
       rescue Strava::Errors::Fault => e
         if e.errors.any? { |error| error["field"] == "refresh_token" && error["code"] == "invalid" }
           rider.update!(access_token: nil, refresh_token: nil)
