@@ -6,7 +6,7 @@ class RefreshAccessTokenJob
 
   class << self
     def queue_job(rider)
-      unless RefreshAccessTokenJob.jobs.any? { |j| Time.at(j["at"]).to_datetime <= (rider.access_token_expires_at - 1.hour) }
+      unless Sidekiq::ScheduledSet.new.scan("RefreshAccessTokenJob").any? { |j| Time.at(j["at"]).to_datetime <= (rider.access_token_expires_at - 1.hour) }
         RefreshAccessTokenJob.perform_at(
           rider.access_token_expires_at - 1.hour,
           rider.id
