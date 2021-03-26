@@ -37,4 +37,8 @@ class AuthController < ApplicationController
     session[:user_id] = rider.user_id
     render json: {id: rider.user_id}, status: :ok
   end
+
+  def logout
+    session[:user_id] = nil
+  end
 end
