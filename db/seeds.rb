@@ -4,7 +4,9 @@ rider = Rider.create!(
   access_token: "fake_access_token",
   athlete_json: {
     "firstname": "Noah",
-    "lastname": "Silvera"
+    "lastname": "Silvera",
+    "profile": "https://placekitten.com/400/400",
+    "profile_medium": "https://placekitten.com/200/200"
   }
 )
 
@@ -14,7 +16,9 @@ Rider.create!(
   access_token: "fake_access_token",
   athlete_json: {
     "firstname": "Saskia",
-    "lastname": "Kowalik"
+    "lastname": "Kowalik",
+    "profile": "https://placekitten.com/400/400",
+    "profile_medium": "https://placekitten.com/200/200"
   }
 )
 
