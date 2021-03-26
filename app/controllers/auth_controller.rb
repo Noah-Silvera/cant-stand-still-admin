@@ -30,6 +30,8 @@ class AuthController < ApplicationController
     rider.update!(athlete_json: body["athlete"], access_token: body["access_token"], refresh_token: body["refresh_token"])
     rider.save!
 
+    RefreshAccessTokenJob.queue_job(rider)
+
     FetchRidesJob.perform_async(rider.id)
 
     session[:user_id] = rider.user_id

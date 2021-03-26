@@ -52,7 +52,7 @@ RSpec.describe "Auth Controller", type: :request do
           expect { subject }.to change { Rider.first.access_token }.from("222").to("123123")
         end
 
-        it "updates the refres token" do
+        it "updates the refresh token" do
           expect { subject }.to change { Rider.first.refresh_token }.from("333").to("456456")
         end
       end
@@ -83,6 +83,12 @@ RSpec.describe "Auth Controller", type: :request do
       it "queues a FetchRidesJob" do
         subject
         expect(FetchRidesJob).to have_enqueued_sidekiq_job(Rider.first.id)
+      end
+
+
+      it "queues a RefreshAccessTokenJob" do
+        expect(RefreshAccessTokenJob).to receive(:queue_job)
+        subject
       end
     end
 
