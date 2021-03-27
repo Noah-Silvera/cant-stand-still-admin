@@ -1,4 +1,9 @@
-<table class="table-auto w-full m-8">
+<table class="table-auto w-full m-auto max-w-6xl">
+  <div class="flex flex-row justify-end items-center mx-auto my-4 max-w-6xl">
+    <div class="mr-8">
+      <%= render(BlueButtonComponent.new(text: "New trip", link: new_trip_path(@trip))) %>
+    </div>
+  </div>
   <thead>
     <tr>
       <th class="text-left pl-4 py-2 text-xl">Trip</th>
