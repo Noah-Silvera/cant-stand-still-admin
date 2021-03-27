@@ -2,6 +2,8 @@ require "uri"
 require "net/http"
 
 class AuthController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   def login
     unless params[:scope]&.include?("read") && params[:scope]&.include?("activity:read")
       return render json: {message: "The application requires access to reading your profile and activities"}, status: :unauthorized
