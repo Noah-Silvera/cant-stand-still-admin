@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     resources :trips
   end
 
+  resources :trips
+
   get "/login", to: 'sessions#login'
   get "/logout", to: 'sessions#logout'
 
