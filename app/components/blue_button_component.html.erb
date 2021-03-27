@@ -1,0 +1,8 @@
+  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold border border-blue-700 text-xl rounded py-2 px-4">
+    <% if @link && @text %>
+      <%= link_to @text, @link %>
+    <% elsif @text %>
+      <p><%= @text %></p>
+    <% end %>
+    <%= content %>
+  </button>

@@ -5,7 +5,5 @@
     <p>-</p>
     <h2><%= @trip.end_date&.to_date&.to_formatted_s(:long) || "Ongoing" %></h2>
   </div>
-  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold border border-blue-700 text-2xl rounded py-2 px-4">
-    <%= link_to "Edit", edit_trip_path(@trip) %>
-  </button>
+  <%= render(BlueButtonComponent.new(text: "Edit", link: edit_trip_path(@trip))) %>
 <div>
