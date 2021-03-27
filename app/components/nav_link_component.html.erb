@@ -1,1 +1,1 @@
-<%= link_to @text, @link, class: ["mx-4", @classStr].join(" ") %>
+<%= link_to @text, @link, class: ["mx-4", @classStr, @is_active && "text-white"].compact.join(" ") %>

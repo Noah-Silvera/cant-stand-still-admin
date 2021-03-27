@@ -6,4 +6,10 @@ class NavLinkComponent < ViewComponent::Base
     @text = text
     @classStr = classStr
   end
+
+  def before_render
+    if request.path == @link
+      @is_active = true
+    end
+  end
 end

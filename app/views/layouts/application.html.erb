@@ -12,8 +12,8 @@
   </head>
 
   <% if current_user %>
-    <div class="p-4 flex flex-row justify-start items-center bg-blue-400 text-white">
-      <p class="mx-4 text-2xl">Trip Manager</p>
+    <div class="p-4 flex flex-row justify-start items-center bg-blue-400 text-blue-200">
+      <p class="mx-4 text-2xl text-white">Trip Manager</p>
       <%= render(NavLinkComponent.new(text: "Trips", link: "/trips")) %>
       <%= render(NavButtonComponent.new(text: "Logout", link: "/logout", classStr: "ml-auto")) %>
       <%= render(NavButtonComponent.new(text: "Return to App", link: "https://cant-stand-still-frontend.vercel.app/")) %>
