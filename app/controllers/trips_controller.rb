@@ -4,11 +4,8 @@ class TripsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if @rider.user_id != session[:user_id]
-          render_404
-        else
-          render
-        end
+        return redirect_to_login unless current_user
+        render
       end
       format.json { render json: @rider.trips.all }
     end

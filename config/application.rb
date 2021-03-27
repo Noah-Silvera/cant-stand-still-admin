@@ -39,6 +39,7 @@ module CantStandStillAdmin
     config.hosts << "localhost"
     Rails.application.config.hosts << "localhost:3002"
 
+    config.session_store :cookie_store, key: '_interslice_session'
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
 

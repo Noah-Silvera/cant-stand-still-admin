@@ -1,0 +1,3 @@
+<% unless Rails.env.production? %>
+  <%= link_to "Sign in as developer", 'auth/developer', method: :get %>
+<% end %>

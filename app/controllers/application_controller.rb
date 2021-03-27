@@ -13,4 +13,8 @@ class ApplicationController < ActionController::Base
       format.any  { head :not_found }
     end
   end
+
+  def redirect_to_login
+    redirect_to "/login"
+  end
 end
