@@ -31,7 +31,6 @@ gem 'bcrypt'
 gem 'rack-cors'
 gem "lockbox"
 gem 'webmock'
-gem 'pundit'
 gem 'factory_bot_rails'
 gem 'strava-ruby-client'
 gem 'sidekiq', '~>6.1.2'

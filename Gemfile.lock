@@ -115,8 +115,6 @@ GEM
     nio4r (2.5.7)
     nokogiri (1.11.2-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.11.2-x86_64-linux)
-      racc (~> 1.4)
     omniauth (2.0.3)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -131,8 +129,6 @@ GEM
     public_suffix (4.0.6)
     puma (5.2.2)
       nio4r (~> 2.0)
-    pundit (2.1.0)
-      activesupport (>= 3.0.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-cors (1.1.1)
@@ -260,7 +256,6 @@ GEM
 
 PLATFORMS
   x86_64-darwin-19
-  x86_64-linux
 
 DEPENDENCIES
   bcrypt
@@ -275,7 +270,6 @@ DEPENDENCIES
   pry
   pry-byebug
   puma (~> 5.0)
-  pundit
   rack-cors
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.3, >= 6.1.3.1)

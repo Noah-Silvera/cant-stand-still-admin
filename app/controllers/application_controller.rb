@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   include ActionController::Helpers
-  include Pundit
   helper_method :current_user
 
   def current_user
