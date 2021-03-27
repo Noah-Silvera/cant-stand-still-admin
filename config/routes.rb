@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
 
   get "/login", to: 'sessions#login'
+  get "/logout", to: 'sessions#logout'
 
   get '/', to: 'trips#index'
 

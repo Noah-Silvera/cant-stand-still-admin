@@ -1,6 +1,6 @@
 class TripsController < ApplicationController
   def index
-    @rider = Rider.find_by user_id: params[:rider_id]
+    @rider = Rider.find_by user_id: params[:rider_id] || current_user
 
     respond_to do |format|
       format.html do

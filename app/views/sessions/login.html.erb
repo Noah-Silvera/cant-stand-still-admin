@@ -1,3 +1,5 @@
 <% unless Rails.env.production? %>
   <%= link_to "Sign in as developer", 'auth/developer', method: :get %>
 <% end %>
+
+<%= link_to "Sign in with Strava", 'auth/strava', method: :get %>

@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def current_user
-    Rider.find_by(id: session[:user_id])
+    Rider.find_by(user_id: session[:user_id])
   end
 
   def render_404
