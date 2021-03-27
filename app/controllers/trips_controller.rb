@@ -4,7 +4,7 @@ class TripsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        return redirect_to_login unless current_user
+        return redirect_to_login unless current_user && current_user == @rider
         @trips = @rider.trips
         render
       end
