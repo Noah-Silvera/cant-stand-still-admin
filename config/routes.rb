@@ -12,7 +12,8 @@ Rails.application.routes.draw do
   get "/login", to: 'sessions#login'
   get "/logout", to: 'sessions#logout'
 
-  get '/', to: 'trips#index'
+  get '/', to: redirect('/trips')
+  get '/trips', to: 'trips#index'
 
   mount Sidekiq::Web => '/sidekiq'
 end
