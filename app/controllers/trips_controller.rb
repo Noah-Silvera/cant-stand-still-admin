@@ -5,6 +5,7 @@ class TripsController < ApplicationController
     respond_to do |format|
       format.html do
         return redirect_to_login unless current_user
+        @trips = @rider.trips
         render
       end
       format.json { render json: @rider.trips.all }

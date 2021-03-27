@@ -1,1 +1,18 @@
-<p>I'm a list of trips</p>
+<table class="table-auto w-full m-8">
+  <thead>
+    <tr>
+      <th class="text-left pl-4 py-2 text-xl">Trip</th>
+      <th class="text-left pl-4 py-2 text-xl">Start Date</th>
+      <th class="text-left pl-4 py-2 text-xl">End Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @rider.trips.each do |trip| %>
+      <tr class="border border-blue-200 cursor-pointer" onclick="location.href='<%= rider_trip_path(@rider, trip) %>'">
+        <td class="p-4 border-r border-blue-200"><%= trip.name %></td>
+        <td class="p-4 border-r border-blue-200"><%= trip.start_date.to_date.to_formatted_s(:long) %></td>
+        <td class="p-4"><%= trip.end_date&.to_date&.to_formatted_s(:long) || "Ongoing" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
