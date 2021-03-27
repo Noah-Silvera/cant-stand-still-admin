@@ -55,6 +55,10 @@ jobs:
           key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gem-
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.2.0
+        with:
+          redis-version: 6
       - name: Install Dependencies
         run: bundle install --deployment --path vendor/bundle
       - run: bundle exec rake db:create
