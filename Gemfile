@@ -36,6 +36,7 @@ gem 'factory_bot_rails'
 gem 'strava-ruby-client'
 gem 'sidekiq', '~>6.1.2'
 gem 'redis-namespace'
+gem 'omniauth', '~> 2.0.3'
 
 group :development, :test do
   gem 'pry-byebug'
