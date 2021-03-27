@@ -1,7 +1,11 @@
 class TripsController < ApplicationController
   def index
     @rider = Rider.find_by user_id: params[:rider_id]
-    render json: @rider.trips.all
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @rider.trips.all }
+    end
   end
 
   def show
