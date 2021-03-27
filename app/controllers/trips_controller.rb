@@ -1,10 +1,12 @@
 class TripsController < ApplicationController
-  def index
-    @rider = Rider.find_by(user_id: params[:rider_id]) || current_user
+  before_action :set_rider, only: [:index]
+  before_action :set_trip_and_rider, except: [:index]
+  before_action :ensure_logged_in, only: [:edit, :update, :create, new]
+  before_action :ensure_logged_in, only: [:index, :show], unless: :json_format?
 
+  def index
     respond_to do |format|
       format.html do
-        return redirect_to_login unless current_user && current_user == @rider
         @trips = @rider.trips
         render
       end
@@ -13,12 +15,8 @@ class TripsController < ApplicationController
   end
 
   def show
-    @trip = Trip.find params[:id]
-    @rider = @trip.rider
-
     respond_to do |format|
       format.html do
-        return redirect_to_login unless current_user && current_user == @rider
         render
       end
       format.json { render json: @trip }
@@ -26,31 +24,33 @@ class TripsController < ApplicationController
   end
 
   def edit
-    @trip = Trip.find params[:id]
-    @rider = @trip.rider
-
-    return redirect_to_login unless current_user && current_user == @rider
     render
   end
 
   def update
-    @trip = Trip.find params[:id]
-    @rider = @trip.rider
-
-    return redirect_to_login unless current_user && current_user == @rider
-
     @trip.update!(trip_params)
 
     redirect_to trip_path(@trip)
   end
 
+  def new
+  end
+
   def create
-    Trip.create(trip_params)
   end
 
   private
 
   def trip_params
     params.require(:trip).permit(:start_date, :end_date, :name)
+  end
+
+  def set_rider
+    @rider = Rider.find_by(user_id: params[:rider_id]) || current_user
+  end
+
+  def set_trip_and_rider
+    @trip = Trip.find params[:id]
+    @rider = @trip.rider
   end
 end

@@ -17,4 +17,12 @@ class ApplicationController < ActionController::Base
   def redirect_to_login
     redirect_to "/login"
   end
+
+  def ensure_logged_in
+    return redirect_to_login unless (current_user && current_user == @rider)
+  end
+
+  def json_format?
+    request.format.json?
+  end
 end
