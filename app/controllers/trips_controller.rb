@@ -40,7 +40,9 @@ class TripsController < ApplicationController
 
   def create
     @trip = @rider.trips.create!(trip_params)
-    binding.pry
+    if trip_ongoing?
+      @trip.update!(end_date: nil)
+    end
     redirect_to trip_path(@trip)
   end
 
@@ -48,6 +50,10 @@ class TripsController < ApplicationController
 
   def trip_params
     params.require(:trip).permit(:start_date, :end_date, :name)
+  end
+
+  def trip_ongoing?
+    params.require(:trip).require(:ongoing) == "1"
   end
 
   def set_rider

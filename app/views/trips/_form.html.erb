@@ -5,12 +5,16 @@
     <%= form.text_field :name %>
   <% end %>
   <%= render(FormRowComponent.new) do %>
-    <%= form.label :start_date, "Start date:" %>
+    <%= form.label :start_date, "Start date" %>
     <%= form.date_select :start_date %>
   <% end %>
   <%= render(FormRowComponent.new) do %>
-    <%= form.label :end_date, "End date:" %>
+    <%= form.label :end_date, "End date" %>
     <%= form.date_select :end_date %>
+  <% end %>
+  <%= render(FormRowComponent.new) do %>
+    <%= form.label :ongoing, "Is ongoing? " %>
+    <%= form.check_box :ongoing %>
   <% end %>
   <%= form.submit @trip.persisted? ? "Update" : "Create" %>
 <% end %>
