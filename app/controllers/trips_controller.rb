@@ -14,7 +14,22 @@ class TripsController < ApplicationController
 
   def show
     @trip = Trip.find params[:id]
-    render json: @trip
+
+  def edit
+    @trip = Trip.find params[:id]
+    @rider = @trip.rider
+
+    return redirect_to_login unless current_user && current_user == @rider
+    render
+  end
+
+  def update
+    @trip = Trip.find params[:id]
+    @rider = @trip.rider
+
+    return redirect_to_login unless current_user && current_user == @rider
+
+    @trip.update!(trip_params)
   end
 
   def create

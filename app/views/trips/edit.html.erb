@@ -1,0 +1,17 @@
+<div class="mx-auto max-w-lg text-lg">
+<%= form_with model: @trip, method: :put, class: "flex flex-col" do |form| %>
+  <%= render(FormRowComponent.new) do %>
+    <%= form.label :name, "Trip name:" %>
+    <%= form.text_field :name %>
+  <% end %>
+  <%= render(FormRowComponent.new) do %>
+    <%= form.label :start_date, "Start date:" %>
+    <%= form.datetime_local_field :start_date %>
+  <% end %>
+  <%= render(FormRowComponent.new) do %>
+    <%= form.label :end_date, "End date:" %>
+    <%= form.datetime_local_field :end_date %>
+  <% end %>
+  <%= form.submit "Update" %>
+<% end %>
+</div>

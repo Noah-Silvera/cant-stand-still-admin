@@ -5,7 +5,10 @@ module.exports = {
     extend: {},
   },
   variants: {
-    extend: {},
+    extend: {
+      fontWeight: ['first'],
+      textDecoration: ['first']
+    },
   },
   plugins: [],
 }
