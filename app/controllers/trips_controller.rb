@@ -3,7 +3,13 @@ class TripsController < ApplicationController
     @rider = Rider.find_by user_id: params[:rider_id]
 
     respond_to do |format|
-      format.html
+      format.html do
+        if @rider.user_id != session[:user_id]
+          render_404
+        else
+          render
+        end
+      end
       format.json { render json: @rider.trips.all }
     end
   end

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   end
 
 
-  get "/", to: "trips#index"
+  get '/:rider_id', to: 'trips#index'
 
   mount Sidekiq::Web => '/sidekiq'
 end
