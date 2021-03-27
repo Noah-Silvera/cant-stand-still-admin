@@ -39,6 +39,7 @@ gem 'omniauth', '~> 2.0.3'
 gem 'omniauth-oauth2', '~> 1.7.1'
 gem 'omniauth-rails_csrf_protection'
 gem "tailwindcss-rails", "~> 0.3.3"
+gem "view_component", require: "view_component/engine"
 
 group :development, :test do
   gem 'pry-byebug'
