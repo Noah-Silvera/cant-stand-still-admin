@@ -244,6 +244,8 @@ GEM
       faraday (>= 1.0.0)
       faraday_middleware
       hashie
+    tailwindcss-rails (0.3.3)
+      rails (>= 6.0.0)
     thor (1.1.0)
     tilt (2.0.10)
     timecop (0.9.4)
@@ -301,6 +303,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   strava-ruby-client
+  tailwindcss-rails (~> 0.3.3)
   timecop
   turbolinks (~> 5)
   tzinfo-data
