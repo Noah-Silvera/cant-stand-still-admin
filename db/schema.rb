@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_27_210956) do
+ActiveRecord::Schema.define(version: 2021_03_27_233413) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,14 +30,12 @@ ActiveRecord::Schema.define(version: 2021_03_27_210956) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_id"
-    t.integer "trip_id"
     t.jsonb "activity_json", null: false
     t.text "activity_id", null: false
     t.datetime "start_date", null: false
     t.index ["activity_id"], name: "index_rides_on_activity_id", unique: true
     t.index ["activity_json"], name: "index_rides_on_activity_json", using: :gin
     t.index ["start_date"], name: "index_rides_on_start_date"
-    t.index ["trip_id"], name: "index_trip_id"
     t.index ["user_id"], name: "index_user_id"
   end
 

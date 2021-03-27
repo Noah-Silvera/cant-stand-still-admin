@@ -28,5 +28,5 @@ rides = [
   Ride.create!(rider: rider, start_date: Time.zone.now, activity_json: {}, activity_id: 3)
 ]
 
-Trip.create! name: "Past Bike Trip", rides: rides, rider: rider, start_date: 3.hours.ago, end_date: 1.day.from_now
-Trip.create! name: "Current Bike Trip", rides: rides, rider: rider, start_date: 1.hours.ago, end_date: nil
+Trip.create! name: "Past Bike Trip", rider: rider, start_date: 3.hours.ago, end_date: 1.day.from_now
+Trip.create! name: "Current Bike Trip", rider: rider, start_date: 1.hours.ago, end_date: nil
