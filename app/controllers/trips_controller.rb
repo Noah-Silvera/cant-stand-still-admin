@@ -17,6 +17,10 @@ class TripsController < ApplicationController
     @rider = @trip.rider
 
     respond_to do |format|
+      format.html do
+        return redirect_to_login unless current_user && current_user == @rider
+        render
+      end
       format.json { render json: @trip }
     end
   end
@@ -36,6 +40,8 @@ class TripsController < ApplicationController
     return redirect_to_login unless current_user && current_user == @rider
 
     @trip.update!(trip_params)
+
+    redirect_to trip_path(@trip)
   end
 
   def create
