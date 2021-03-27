@@ -1,6 +1,6 @@
 class TripsController < ApplicationController
-  before_action :set_rider, only: [:index]
-  before_action :set_trip_and_rider, except: [:index]
+  before_action :set_rider, only: [:index, :new, :create]
+  before_action :set_trip_and_rider, except: [:index, :new, :create]
   before_action :ensure_logged_in, only: [:edit, :update, :create, new]
   before_action :ensure_logged_in, only: [:index, :show], unless: :json_format?
 
@@ -34,9 +34,14 @@ class TripsController < ApplicationController
   end
 
   def new
+    @trip = @rider.trips.build
+    render
   end
 
   def create
+    @trip = @rider.trips.create!(trip_params)
+    binding.pry
+    redirect_to trip_path(@trip)
   end
 
   private
