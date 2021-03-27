@@ -14,6 +14,12 @@ class TripsController < ApplicationController
 
   def show
     @trip = Trip.find params[:id]
+    @rider = @trip.rider
+
+    respond_to do |format|
+      format.json { render json: @trip }
+    end
+  end
 
   def edit
     @trip = Trip.find params[:id]
