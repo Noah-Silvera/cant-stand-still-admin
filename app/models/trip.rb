@@ -4,6 +4,12 @@ class Trip < ApplicationRecord
   validate :trip_name_not_empty
   validate :start_before_end_date
 
+  class << self
+    def allowed_attributes
+      [:id, :name, :start_date, :end_date, :user_id]
+    end
+  end
+
   def rides
     rides = rider.rides.where("start_date > ?", start_date)
     if end_date

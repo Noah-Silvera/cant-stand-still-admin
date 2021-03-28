@@ -10,7 +10,7 @@ class TripsController < ApplicationController
         @trips = @rider.trips
         render
       end
-      format.json { render json: @rider.trips.all }
+      format.json { render json: @rider.trips.all, only: Trip.allowed_attributes }
     end
   end
 
@@ -19,7 +19,9 @@ class TripsController < ApplicationController
       format.html do
         render
       end
-      format.json { render json: @trip }
+      format.json { render json: @trip, only: Trip.allowed_attributes }
+    end
+  end
     end
   end
 
