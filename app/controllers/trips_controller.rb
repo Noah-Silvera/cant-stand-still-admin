@@ -22,6 +22,10 @@ class TripsController < ApplicationController
       format.json { render json: @trip, only: Trip.allowed_attributes }
     end
   end
+
+  def rides
+    respond_to do |format|
+      format.json { render json: @trip.rides, only: Ride.allowed_attributes }
     end
   end
 
@@ -63,7 +67,7 @@ class TripsController < ApplicationController
   end
 
   def set_trip_and_rider
-    @trip = Trip.find params[:id]
+    @trip = Trip.find_by(id: params[:id]) || Trip.find(params[:trip_id])
     @rider = @trip.rider
   end
 end

@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   match '/auth/:provider/callback', to: "sessions#create", via: [:get, :post]
 
   resources :riders, only: [:show, :index] do
-    resources :trips
+    resources :trips do
+      get :rides
+    end
   end
 
   resources :trips

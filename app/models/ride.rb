@@ -4,6 +4,12 @@ class Ride < ApplicationRecord
 
   serialize :map, JSON
 
+  class << self
+    def allowed_attributes
+      [:id, :start_date, :map, :user_id]
+    end
+  end
+
   def map
     activity_json["map"]
   end
