@@ -5,8 +5,9 @@ class FetchRidesJob
   include Sidekiq::Worker
   sidekiq_options :retry => 4
 
-  def perform(rider_id)
-    if (rider = Rider.find_by id: rider_id)
+  def perform(trip_id)
+    if (trip = Trip.find_by id: trip_id)
+      rider = trip.rider
       return if rider.access_token.nil?
 
       begin
@@ -14,23 +15,18 @@ class FetchRidesJob
           access_token: rider.access_token
         )
 
-        ordered_rides = rider.rides.order(start_date: :asc)
-
-        before = Time.zone.now
-        if ordered_rides.present?
-          before = ordered_rides.first.start_date.to_time
+        if trip.end_date.nil?
+          client.athlete_activities(
+            after: trip.start_date
+          ) { |activity| process_activity(rider, activity) }
+        else
+          client.athlete_activities(
+            after: trip.start_date,
+            before: trip.end_date
+          ) { |activity| process_activity(rider, activity) }
         end
-
-        client.athlete_activities(before: before) { |activity| process_activity(rider, activity) }
-
-        after = Time.zone.now
-        if ordered_rides.reload.present?
-          after = ordered_rides.last.start_date.to_time
-        end
-
-        client.athlete_activities(after: after) { |activity| process_activity(rider, activity) }
       rescue Strava::Errors::Fault => e
-        RefreshAccessTokenJob.perform_async(rider_id)
+        RefreshAccessTokenJob.perform_async(rider.id)
         raise e
       end
     end

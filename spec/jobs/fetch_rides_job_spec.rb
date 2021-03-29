@@ -6,179 +6,129 @@ RSpec.describe FetchRidesJob, type: :worker do
   include JobHelpers
   include ActiveSupport::Testing::TimeHelpers
 
-  subject { FetchRidesJob.new.perform(rider.id) }
+  subject { FetchRidesJob.new.perform(trip.id) }
 
-  pages = (1..5).to_a.map { |i|
-    File.read(Rails.root.join('spec', 'support', 'data', 'activities', "page-#{i}.json"))
-  }
-
-  pages.push("[]")
-
-  total_rides = pages.sum { |page| JSON.parse(page).filter { |activity| activity["type"] == "Ride" }.count }
-
-  context "the rider has no rides" do
+  context "the rider and request is valid" do
     let(:rider) { create :rider }
+    let!(:trip) { create :trip, rider: rider, start_date: 5.days.ago, end_date: 2.day.ago }
 
-    it "creates all the rides associated with the rider" do
-      freeze_time do
-        stub_request(:get, "https://www.strava.com/api/v3/athlete/activities").
-          with(
-            query: hash_including({ "before" => Time.zone.now.to_i.to_s }),
-            headers: {
-          'Accept'=>'application/json; charset=utf-8',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization'=>'Bearer fake-access-token',
-          'User-Agent'=>'Strava Ruby Client/0.4.0'
-            }).
-          to_return(lambda { |req|
-            page_num = req.uri.query_values["page"].to_i - 1
-            {
-              status: 200,
-              body: pages[page_num],
-              headers: {
-                "content-type" => "application/json; charset=utf-8"
-              }
-            }
-          })
-
-        latest_ride_date = JSON.parse(pages[0]).first["start_date"].to_time.to_i.to_s
-
-        stub_request(:get, "https://www.strava.com/api/v3/athlete/activities").
-        with(
-          query: hash_including({ "after" => latest_ride_date}),
+    before do
+      stub_request(:get, "https://www.strava.com/api/v3/athlete/activities")
+        .with(
+          query: hash_including({
+            "after" => trip.start_date.to_i.to_s,
+            "before" => trip.end_date.to_i.to_s,
+          }),
           headers: {
             'Accept'=>'application/json; charset=utf-8',
             'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
             'Authorization'=>'Bearer fake-access-token',
             'User-Agent'=>'Strava Ruby Client/0.4.0'
-          }).
-        to_return(lambda { |req|
-          {
-            status: 200,
-            body: "[]",
-            headers: {
-              "content-type" => "application/json; charset=utf-8"
-            }
           }
+        ).to_return(lambda { |req|
+          page_num = req.uri.query_values["page"].to_i
+          if page_num == 1
+            {
+              status: 200,
+              body: JSON.dump([
+                {
+                  "type": "Ride",
+                  "id": 1,
+                  "start_date": 4.days.ago.iso8601
+                },
+                {
+                  "type": "Ride",
+                  "id": 2,
+                  "start_date": 3.days.ago.iso8601
+                }
+              ]),
+              headers: {
+                "content-type" => "application/json; charset=utf-8"
+              }
+            }
+          else
+            {
+              status: 200,
+              body: JSON.dump([]),
+              headers: {
+                "content-type" => "application/json; charset=utf-8"
+              }
+            }
+          end
         })
+    end
 
-        expect { subject }.to change { rider.reload.rides.count }.from(0).to(total_rides)
+    context "the trip has no rides" do
+      it "creates all the rides associated with the trip" do
+        expect { subject }.to change { trip.rides.count }.from(0).to(2)
       end
     end
-  end
 
-  context "the rider is missing some older rides" do
-    let(:rider) { create :rider }
+    context "the trip is missing some rides" do
+      let!(:ride_one) { create :ride, activity_id: 1, rider: rider, start_date: 4.days.ago }
 
-    it "fetches the older rides" do
-      freeze_time do
-        ride = create :ride, rider: rider, start_date: Time.zone.now
-
-        stub_request(:get, "https://www.strava.com/api/v3/athlete/activities").
-          with(
-            query: hash_including({ "before" => ride.start_date.to_i.to_s }),
-            headers: {
-          'Accept'=>'application/json; charset=utf-8',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization'=>'Bearer fake-access-token',
-          'User-Agent'=>'Strava Ruby Client/0.4.0'
-            }).
-          to_return(lambda { |req|
-            page_num = req.uri.query_values["page"].to_i - 1
-            {
-              status: 200,
-              body: page_num == 0 ? JSON.dump([JSON.parse(pages[0]).first]) : "[]",
-              headers: {
-                "content-type" => "application/json; charset=utf-8"
-              }
-            }
-          })
-
-        latest_ride_date = ride.start_date.to_time.to_i.to_s
-
-        stub_request(:get, "https://www.strava.com/api/v3/athlete/activities").
-        with(
-          query: hash_including({ "after" => latest_ride_date}),
-          headers: {
-            'Accept'=>'application/json; charset=utf-8',
-            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization'=>'Bearer fake-access-token',
-            'User-Agent'=>'Strava Ruby Client/0.4.0'
-          }).
-        to_return(lambda { |req|
-          {
-            status: 200,
-            body: "[]",
-            headers: {
-              "content-type" => "application/json; charset=utf-8"
-            }
-          }
-        })
-
-        expect { subject }.to change { rider.reload.rides.count }.from(1).to(2)
+      it "fetches and creates the newer rides" do
+        expect { subject }.to change { trip.rides.count }.from(1).to(2)
       end
     end
-  end
 
-  context "the rider is missing some newer rides" do
-    let(:rider) { create :rider }
+    context "the trip has no end date" do
+      let!(:trip) { create :trip, rider: rider, start_date: 5.days.ago, end_date: nil }
 
-    it "creates all the rides associated with the rider" do
-      freeze_time do
-        ride = create :ride, rider: rider, start_date: 1.day.ago
-
-        new_ride = JSON.parse(pages[0]).first
-        new_ride["start_date"] = Time.zone.now.iso8601
-
-        stub_request(:get, "https://www.strava.com/api/v3/athlete/activities").
-          with(
-            query: hash_including({ "before" => ride.start_date.to_i.to_s }),
+      before do
+        stub_request(:get, "https://www.strava.com/api/v3/athlete/activities")
+          .with(
+            query: hash_including({
+              "after" => trip.start_date.to_i.to_s
+            }),
             headers: {
-          'Accept'=>'application/json; charset=utf-8',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'Authorization'=>'Bearer fake-access-token',
-          'User-Agent'=>'Strava Ruby Client/0.4.0'
-            }).
-          to_return(lambda { |req|
-            page_num = req.uri.query_values["page"].to_i - 1
-            {
-              status: 200,
-              body: "[]",
-              headers: {
-                "content-type" => "application/json; charset=utf-8"
+              'Accept'=>'application/json; charset=utf-8',
+              'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization'=>'Bearer fake-access-token',
+              'User-Agent'=>'Strava Ruby Client/0.4.0'
+            }
+          ).to_return(lambda { |req|
+            page_num = req.uri.query_values["page"].to_i
+            if page_num == 1
+              {
+                status: 200,
+                body: JSON.dump([
+                  {
+                    "type": "Ride",
+                    "id": 1,
+                    "start_date": 4.days.ago.iso8601
+                  },
+                  {
+                    "type": "Ride",
+                    "id": 2,
+                    "start_date": 3.days.ago.iso8601
+                  }
+                ]),
+                headers: {
+                  "content-type" => "application/json; charset=utf-8"
+                }
               }
-            }
+            else
+              {
+                status: 200,
+                body: JSON.dump([]),
+                headers: {
+                  "content-type" => "application/json; charset=utf-8"
+                }
+              }
+            end
           })
+      end
 
-        latest_ride_date = ride.start_date.to_time.to_i.to_s
-
-        stub_request(:get, "https://www.strava.com/api/v3/athlete/activities").
-        with(
-          query: hash_including({ "after" => latest_ride_date}),
-          headers: {
-            'Accept'=>'application/json; charset=utf-8',
-            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization'=>'Bearer fake-access-token',
-            'User-Agent'=>'Strava Ruby Client/0.4.0'
-          }).
-        to_return(lambda { |req|
-          page_num = req.uri.query_values["page"].to_i - 1
-          {
-            status: 200,
-            body: page_num == 0 ? JSON.dump([new_ride]) : "[]",
-            headers: {
-              "content-type" => "application/json; charset=utf-8"
-            }
-          }
-        })
-
-        expect { subject }.to change { rider.reload.rides.count }.from(1).to(2)
+      it "creates all the rides associated with the trip" do
+        expect { subject }.to change { trip.rides.count }.from(0).to(2)
       end
     end
   end
 
   context "an authorization error occurs" do
     let(:rider) { create :rider }
+    let!(:trip) { create :trip, rider: rider, start_date: 5.days.ago, end_date: 2.day.ago }
 
     before do
       stub_request(:get, "https://www.strava.com/api/v3/athlete/activities")
@@ -206,13 +156,14 @@ RSpec.describe FetchRidesJob, type: :worker do
 
   context "a rider does not have an access token" do
     let(:rider) { create :rider, access_token: nil }
+    let!(:trip) { create :trip, rider: rider, start_date: 5.days.ago, end_date: 2.day.ago }
 
     it "exits the job early" do
       expect(subject).to be_nil
     end
   end
 
-  context "the rider does not exist" do
+  context "the trip does not exist" do
     subject { FetchRidesJob.new.perform(100000) }
 
     it "exits the job early" do
