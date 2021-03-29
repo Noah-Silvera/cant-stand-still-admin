@@ -36,6 +36,8 @@ class TripsController < ApplicationController
   def update
     @trip.update!(trip_params)
 
+    FetchRidesJob.perform_async(trip.id)
+
     redirect_to trip_path(@trip)
   end
 
