@@ -8,6 +8,14 @@ class Trip < ApplicationRecord
     def allowed_attributes
       [:id, :name, :start_date, :end_date, :user_id]
     end
+
+    def create_and_populate_rides!(rider, attributes, ongoing)
+      trip = rider.trips.create!(attributes)
+      if ongoing
+        trip.update!(end_date: nil)
+      end
+      trip
+    end
   end
 
   def rides

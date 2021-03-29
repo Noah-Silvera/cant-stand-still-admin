@@ -45,10 +45,8 @@ class TripsController < ApplicationController
   end
 
   def create
-    @trip = @rider.trips.create!(trip_params)
-    if trip_ongoing?
-      @trip.update!(end_date: nil)
-    end
+    @trip = Trip.create_and_populate_rides!(@rider, trip_params, trip_ongoing?)
+
     redirect_to trip_path(@trip)
   end
 
