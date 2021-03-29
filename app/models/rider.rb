@@ -18,16 +18,23 @@ class Rider < ApplicationRecord
             athlete_json: auth_hash["info"]["athlete_json"]
           )
         else
-          rider = Rider.create!(
+          Rider.create_and_populate_rides({
             user_id: auth_hash["uid"],
             access_token: auth_hash["info"]["access_token"],
             refresh_token: auth_hash["info"]["refresh_token"],
             access_token_expires_at: auth_hash["info"]["expires_at"],
             athlete_json: auth_hash["info"]["athlete_json"]
-          )
+          })
         end
         rider
       end
+    end
+
+    def create_and_populate_rides(attributes)
+      rider = Rider.create!(attributes)
+      RefreshAccessTokenJob.queue_job(rider)
+      FetchRidesJob.perform_async(rider.id)
+      rider
     end
   end
 
