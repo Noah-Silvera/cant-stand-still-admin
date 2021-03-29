@@ -9,11 +9,14 @@ class Trip < ApplicationRecord
       [:id, :name, :start_date, :end_date, :user_id]
     end
 
-    def create_and_populate_rides!(rider, attributes, ongoing)
+    def create_and_populate_rides!(rider, attributes, ongoing = false)
       trip = rider.trips.create!(attributes)
       if ongoing
         trip.update!(end_date: nil)
       end
+
+      FetchRidesJob.perform_async(trip.id)
+
       trip
     end
   end

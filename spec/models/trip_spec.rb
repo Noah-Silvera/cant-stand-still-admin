@@ -24,4 +24,27 @@ RSpec.describe Trip, type: :model do
       end
     end
   end
+
+  describe "#create_and_populate_rides!" do
+    subject { Trip.create_and_populate_rides!(rider, attributes_for(:trip)) }
+
+    let(:rider) { create :rider }
+
+    it "creates the trip" do
+      expect { subject }.to change { Trip.count }.from(0).to(1)
+    end
+
+    it "fetches the rides for the trip" do
+      expect(FetchRidesJob).to have_enqueued_sidekiq_job(subject.id)
+    end
+
+    context "the trip is ongoing" do
+      subject { Trip.create_and_populate_rides!(rider, attributes_for(:trip), true) }
+
+      it "creates the trip with a nil end date" do
+        subject
+        expect(Trip.last.end_date).to be_nil
+      end
+    end
+  end
 end
