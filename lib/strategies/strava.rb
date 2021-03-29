@@ -10,7 +10,8 @@ module OmniAuth
       }
 
       option :authorize_params, {
-        response_type: "code"
+        response_type: "code",
+        scope: "read,activity:read"
       }
 
       uid { raw_info.params["athlete"]["id"] }
