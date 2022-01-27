@@ -33,7 +33,7 @@ gem "lockbox"
 gem 'webmock'
 gem 'factory_bot_rails'
 gem 'strava-ruby-client'
-gem 'sidekiq', '~>6.1.2'
+gem 'sidekiq', '~>6.4.0'
 gem 'redis-namespace'
 gem 'omniauth', '~> 2.0.3'
 gem 'omniauth-oauth2', '~> 1.7.1'
